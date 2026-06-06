@@ -2,13 +2,14 @@
 
 import { useState } from "react";
 import MessageBubble from "./MessageBubble";
+import ProductCard from "./ProductCard";
 
 export default function ChatWindow() {
   const [messages, setMessages] = useState([
     {
       role: "assistant",
-      content: "Hello! What would you like to shop for today?"
-    }
+      content: "Hello! What would you like to shop for today?",
+    },
   ]);
 
   const [input, setInput] = useState("");
@@ -16,23 +17,50 @@ export default function ChatWindow() {
   const sendMessage = async () => {
     if (!input.trim()) return;
 
+    const userMessage = input;
+
     setMessages((prev) => [
       ...prev,
-      { role: "user", content: input }
+      { role: "user", content: userMessage },
     ]);
 
     setInput("");
+
+    const response = await fetch("/api/chat", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({ message: userMessage }),
+    });
+
+    const data = await response.json();
+
+    setMessages((prev) => [
+      ...prev,
+      {
+        role: "assistant",
+        content: data.reply,
+        products: data.products || [],
+      },
+    ]);
   };
 
   return (
     <div className="flex flex-col h-screen p-4">
       <div className="flex-1 overflow-y-auto space-y-4">
         {messages.map((msg, index) => (
-          <MessageBubble
-            key={index}
-            role={msg.role}
-            content={msg.content}
-          />
+          <div key={index}>
+            <MessageBubble role={msg.role} content={msg.content} />
+
+            {msg.products?.length > 0 && (
+              <div className="flex gap-3 mt-2 flex-wrap">
+                {msg.products.map((product) => (
+                  <ProductCard key={product.id} product={product} />
+                ))}
+              </div>
+            )}
+          </div>
         ))}
       </div>
 
