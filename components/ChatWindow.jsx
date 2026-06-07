@@ -26,24 +26,47 @@ export default function ChatWindow() {
 
     setInput("");
 
-    const response = await fetch("/api/chat", {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify({ message: userMessage }),
-    });
+    try {
+      const response = await fetch("/api/chat", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({ message: userMessage }),
+      });
 
-    const data = await response.json();
+      if (!response.ok) {
+        throw new Error(`API failed with status ${response.status}`);
+      }
 
-    setMessages((prev) => [
-      ...prev,
-      {
-        role: "assistant",
-        content: data.reply,
-        products: data.products || [],
-      },
-    ]);
+      const text = await response.text();
+
+      if (!text) {
+        throw new Error("API returned empty response");
+      }
+
+      const data = JSON.parse(text);
+
+      setMessages((prev) => [
+        ...prev,
+        {
+          role: "assistant",
+          content: data.reply,
+          products: data.products || [],
+        },
+      ]);
+    } catch (error) {
+      console.error("Chat request failed:", error);
+
+      setMessages((prev) => [
+        ...prev,
+        {
+          role: "assistant",
+          content: "Sorry, I could not connect to the chat API. Please check the terminal error.",
+          products: [],
+        },
+      ]);
+    }
   };
 
   return (
