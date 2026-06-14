@@ -42,19 +42,19 @@ export default function CheckoutModal({ isOpen, onClose, cart, deliveryDetails, 
                 <form id="checkout-form" onSubmit={handleSubmit} className="space-y-4">
                   <div>
                     <label className="text-xs font-semibold text-gray-500 mb-1 block">Full Name</label>
-                    <input required type="text" value={formData.name} onChange={e => setFormData({...formData, name: e.target.value})} className="w-full px-4 py-2 bg-gray-50 border border-gray-200 rounded-xl outline-none focus:border-red-500 text-sm" placeholder="John Doe" />
+                    <input required type="text" value={formData.name} onChange={e => setFormData({...formData, name: e.target.value})} className="w-full px-4 py-2 bg-gray-50 border border-gray-200 rounded-xl outline-none focus:border-red-500 text-sm text-gray-900 placeholder-gray-400" placeholder="John Doe" />
                   </div>
                   <div>
                     <label className="text-xs font-semibold text-gray-500 mb-1 block">Phone Number</label>
-                    <input required type="tel" value={formData.phone} onChange={e => setFormData({...formData, phone: e.target.value})} className="w-full px-4 py-2 bg-gray-50 border border-gray-200 rounded-xl outline-none focus:border-red-500 text-sm" placeholder="077xxxxxxx" />
+                    <input required type="tel" value={formData.phone} onChange={e => setFormData({...formData, phone: e.target.value})} className="w-full px-4 py-2 bg-gray-50 border border-gray-200 rounded-xl outline-none focus:border-red-500 text-sm text-gray-900 placeholder-gray-400" placeholder="077xxxxxxx" />
                   </div>
                   <div>
                     <label className="text-xs font-semibold text-gray-500 mb-1 block">Email</label>
-                    <input required type="email" value={formData.email} onChange={e => setFormData({...formData, email: e.target.value})} className="w-full px-4 py-2 bg-gray-50 border border-gray-200 rounded-xl outline-none focus:border-red-500 text-sm" placeholder="john@example.com" />
+                    <input required type="email" value={formData.email} onChange={e => setFormData({...formData, email: e.target.value})} className="w-full px-4 py-2 bg-gray-50 border border-gray-200 rounded-xl outline-none focus:border-red-500 text-sm text-gray-900 placeholder-gray-400" placeholder="john@example.com" />
                   </div>
                   <div>
                     <label className="text-xs font-semibold text-gray-500 mb-1 block">Delivery Address</label>
-                    <textarea required value={formData.address} onChange={e => setFormData({...formData, address: e.target.value})} className="w-full px-4 py-2 bg-gray-50 border border-gray-200 rounded-xl outline-none focus:border-red-500 text-sm h-20 resize-none" placeholder="123 Main St..." />
+                    <textarea required value={formData.address} onChange={e => setFormData({...formData, address: e.target.value})} className="w-full px-4 py-2 bg-gray-50 border border-gray-200 rounded-xl outline-none focus:border-red-500 text-sm h-20 resize-none text-gray-900 placeholder-gray-400" placeholder="123 Main St..." />
                   </div>
                 </form>
               </div>
@@ -66,18 +66,18 @@ export default function CheckoutModal({ isOpen, onClose, cart, deliveryDetails, 
                     {cart.map((item, idx) => (
                       <div key={idx} className="flex justify-between items-center text-sm">
                         <span className="text-gray-600 truncate mr-2">{item.quantity}x {item.name}</span>
-                        <span className="font-medium">{item.price}</span>
+                        <span className="font-medium text-gray-900">{item.price}</span>
                       </div>
                     ))}
                   </div>
                   <div className="pt-4 border-t border-gray-200 space-y-2 text-sm">
                     <div className="flex justify-between">
                       <span className="text-gray-500">City</span>
-                      <span className="font-medium">{context.city !== "Not identified" ? context.city : "Pending"}</span>
+                      <span className="font-medium text-gray-900">{context.city !== "Not identified" ? context.city : "Pending"}</span>
                     </div>
                     <div className="flex justify-between">
                       <span className="text-gray-500">Date</span>
-                      <span className="font-medium">{deliveryDetails.date}</span>
+                      <span className="font-medium text-gray-900">{deliveryDetails.date}</span>
                     </div>
                     {giftMessage && (
                       <div className="pt-2">

@@ -154,7 +154,7 @@ export default function ChatArea() {
                 onChange={(e) => setInput(e.target.value)}
                 onKeyDown={(e) => e.key === "Enter" && sendMessage()}
                 placeholder="Who are you shopping for today?"
-                className="flex-1 outline-none text-sm bg-transparent"
+                className="flex-1 outline-none text-sm bg-transparent text-gray-900 placeholder-gray-400"
               />
 
               <button
