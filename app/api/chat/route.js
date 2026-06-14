@@ -59,7 +59,18 @@ export async function POST(request) {
     const isTanglish = lowerMsg.match(/\b(amma|thaththa|aiya|akki|nangi|malli|upandinaya|thaaggak|mal|kolamba|nuwara)\b/);
 
     // Determine if it's a direct product search
-    const isDirectSearch = lowerMsg.match(/\b(cake|cakes|flower|flowers|chocolate|chocolates|choko|hamper|hampers|mal|rose|roses|teddy|watch|mug|perfume|gift box|bouquet)\b/);
+    const productKeywords = lowerMsg.match(/\b(cake|cakes|flower|flowers|chocolate|chocolates|choko|hamper|hampers|mal|rose|roses|teddy|watch|mug|perfume|gift box|bouquet)\b/);
+    const isVagueGiftQuery = lowerMsg.match(/\b(gift|present|idea|suggest|recommend|help me|something for)\b/);
+    const isGreeting = lowerMsg.match(/^(hi|hello|hey|greetings)$/);
+
+    let isDirectSearch = false;
+    if (productKeywords) {
+      isDirectSearch = true;
+    } else if (!isVagueGiftQuery && !isGreeting && extractedContext.recipient === "Not identified" && extractedContext.occasion === "Not identified") {
+      // e.g., "yoga mats around 3000" - No recipient, no occasion, no vague "gift" words.
+      // We assume the user is just searching directly.
+      isDirectSearch = true;
+    }
 
     let reply = "";
     let products = [];
