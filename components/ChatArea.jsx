@@ -63,7 +63,7 @@ export default function ChatArea() {
         headers: {
           "Content-Type": "application/json",
         },
-        body: JSON.stringify({ message: userMessage }),
+        body: JSON.stringify({ message: userMessage, currentContext: context }),
       });
 
       const data = await response.json();
