@@ -1,6 +1,8 @@
 import { ShoppingCart, ExternalLink } from "lucide-react";
 
 export default function ProductCard({ product, index, onAddToCart }) {
+  const categoryName = typeof product.category === 'object' ? product.category.name : (product.category || "General");
+
   return (
     <div className="min-w-[260px] max-w-[260px] bg-white rounded-[28px] overflow-hidden border border-red-50 shadow-lg hover:shadow-xl transition group flex flex-col">
       <div className="relative h-[170px] bg-gray-100 overflow-hidden shrink-0">
@@ -32,7 +34,7 @@ export default function ProductCard({ product, index, onAddToCart }) {
         <p className="text-xs text-green-600 mt-2 font-medium">● {product.availability || "In Stock"} · Gift Wrapping</p>
 
         <p className="text-[11px] text-gray-400 italic mt-3 flex-1">
-          Recommended because it matches your selected category ({product.category || "General"}).
+          Recommended because it matches your selected category ({categoryName}).
         </p>
 
         <div className="flex items-end justify-between mt-4">
