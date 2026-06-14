@@ -36,7 +36,7 @@ export default function CartSummary({ cart, onUpdateQuantity, onRemoveItem }) {
                   <button onClick={() => onUpdateQuantity(item.id, -1)} className="p-1 hover:bg-gray-200 rounded text-gray-500">
                     <Minus size={12} />
                   </button>
-                  <span className="text-xs font-semibold w-4 text-center">{item.quantity || 1}</span>
+                  <span className="text-xs font-semibold w-4 text-center text-gray-900">{item.quantity || 1}</span>
                   <button onClick={() => onUpdateQuantity(item.id, 1)} className="p-1 hover:bg-gray-200 rounded text-gray-500">
                     <Plus size={12} />
                   </button>
@@ -54,7 +54,7 @@ export default function CartSummary({ cart, onUpdateQuantity, onRemoveItem }) {
       <div className="mt-6 space-y-3 text-sm bg-gray-50 p-4 rounded-xl">
         <div className="flex justify-between">
           <span className="text-gray-500">Selected Items</span>
-          <span className="font-medium">{cart.reduce((sum, item) => sum + (item.quantity || 1), 0)}</span>
+          <span className="font-medium text-gray-900">{cart.reduce((sum, item) => sum + (item.quantity || 1), 0)}</span>
         </div>
 
         <div className="flex justify-between">
@@ -62,7 +62,7 @@ export default function CartSummary({ cart, onUpdateQuantity, onRemoveItem }) {
           <span className="font-medium text-green-600">Free</span>
         </div>
 
-        <div className="pt-2 border-t border-gray-200 flex justify-between font-bold text-base">
+        <div className="pt-2 border-t border-gray-200 flex justify-between font-bold text-base text-gray-900">
           <span>Total</span>
           <span className="text-[#C91508]">Rs. {total.toLocaleString()}</span>
         </div>

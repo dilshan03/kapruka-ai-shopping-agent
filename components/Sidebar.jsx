@@ -62,7 +62,7 @@ export default function Sidebar({
             value={giftMessage}
             onChange={(e) => setGiftMessage(e.target.value)}
             placeholder="Write a message for your loved one..."
-            className="w-full h-20 text-sm p-3 bg-gray-50 border border-gray-100 rounded-xl outline-none focus:border-red-200 transition resize-none"
+            className="w-full h-20 text-sm p-3 bg-gray-50 border border-gray-100 rounded-xl outline-none focus:border-red-200 transition resize-none text-gray-900 placeholder-gray-400"
           />
         </div>
 

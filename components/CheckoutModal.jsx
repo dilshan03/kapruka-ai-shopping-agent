@@ -86,7 +86,7 @@ export default function CheckoutModal({ isOpen, onClose, cart, deliveryDetails, 
                       </div>
                     )}
                   </div>
-                  <div className="pt-4 border-t border-gray-200 flex justify-between items-center font-bold text-lg">
+                  <div className="pt-4 border-t border-gray-200 flex justify-between items-center font-bold text-lg text-gray-900">
                     <span>Total</span>
                     <span className="text-[#C91508]">Rs. {total.toLocaleString()}</span>
                   </div>
