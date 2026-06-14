@@ -7,6 +7,7 @@ import ProductCarousel from "./ProductCarousel";
 import SuggestedPrompts from "./SuggestedPrompts";
 import Sidebar from "./Sidebar";
 import LoadingState from "./LoadingState";
+import CheckoutModal from "./CheckoutModal";
 
 export default function ChatArea() {
   const [messages, setMessages] = useState([
@@ -29,40 +30,22 @@ export default function ChatArea() {
     stage: "Recipient Identified",
   });
 
+  const [isCheckoutOpen, setIsCheckoutOpen] = useState(false);
+
+  const [deliveryDetails, setDeliveryDetails] = useState({
+    date: "Not selected",
+    fee: "Free",
+    status: "Pending"
+  });
+
+  const [giftMessage, setGiftMessage] = useState("");
+
   const updateContextFromMessage = (message) => {
-    const lower = message.toLowerCase();
-
-    setContext({
-      recipient: lower.includes("mother") || lower.includes("mom")
-        ? "Mother"
-        : lower.includes("wife")
-          ? "Wife"
-          : lower.includes("friend")
-            ? "Friend"
-            : "Not identified",
-
-      occasion: lower.includes("birthday")
-        ? "Birthday"
-        : lower.includes("anniversary")
-          ? "Anniversary"
-          : lower.includes("wedding")
-            ? "Wedding"
-            : "Gift",
-
-      budget: message.match(/\d+/)
-        ? `Rs. ${message.match(/\d+/)[0]}`
-        : "Not identified",
-
-      city: lower.includes("colombo")
-        ? "Colombo"
-        : lower.includes("kandy")
-          ? "Kandy"
-          : lower.includes("galle")
-            ? "Galle"
-            : "Not identified",
-
-      stage: "Product Selection",
-    });
+    // Basic optimistic update, real context comes from backend
+    setContext(prev => ({
+      ...prev,
+      stage: "Product Selection"
+    }));
   };
 
   const sendMessage = async (customMessage) => {
@@ -85,13 +68,15 @@ export default function ChatArea() {
 
       const data = await response.json();
 
+      if (data.extractedContext) {
+        setContext(data.extractedContext);
+      }
+
       setMessages((prev) => [
         ...prev,
         {
           role: "assistant",
-          content:
-            data.reply ||
-            "Wonderful! I found some premium options that match your request.",
+          content: data.reply || "I encountered an issue while searching.",
           products: data.products || [],
         },
       ]);
@@ -112,15 +97,35 @@ export default function ChatArea() {
   };
 
   const addToCart = (product) => {
-    setCart((prev) => [...prev, product]);
+    setCart((prev) => {
+      const existing = prev.find(item => item.id === product.id);
+      if (existing) {
+        return prev.map(item => item.id === product.id ? { ...item, quantity: item.quantity + 1 } : item);
+      }
+      return [...prev, { ...product, quantity: 1 }];
+    });
+  };
+
+  const removeFromCart = (productId) => {
+    setCart(prev => prev.filter(item => item.id !== productId));
+  };
+
+  const updateQuantity = (productId, delta) => {
+    setCart(prev => prev.map(item => {
+      if (item.id === productId) {
+        const newQuantity = item.quantity + delta;
+        return newQuantity > 0 ? { ...item, quantity: newQuantity } : item;
+      }
+      return item;
+    }));
   };
 
   return (
     <div className="h-screen bg-[#FBFAF8] flex overflow-hidden">
-      <main className="flex-1 flex flex-col">
-        <Header cartCount={cart.length} />
+      <main className="flex-1 flex flex-col h-full">
+        <Header cartCount={cart.length} onCartClick={() => setIsCheckoutOpen(true)} />
 
-        <section className="flex-1 overflow-y-auto px-10 py-6">
+        <section className="flex-1 overflow-y-auto px-4 md:px-10 py-6">
           <div className="max-w-5xl mx-auto space-y-6">
             {isLoading && <LoadingState />}
 
@@ -139,11 +144,11 @@ export default function ChatArea() {
           </div>
         </section>
 
-        <div className="px-10 pb-6">
+        <div className="px-4 md:px-10 pb-6 shrink-0 bg-gradient-to-t from-[#FBFAF8] pt-4">
           <div className="max-w-5xl mx-auto">
             <SuggestedPrompts onPromptClick={sendMessage} />
 
-            <div className="mt-4 bg-white rounded-3xl shadow-lg border border-red-100 flex items-center px-5 py-4">
+            <div className="mt-4 bg-white rounded-3xl shadow-lg border border-red-100 flex items-center px-4 py-3 md:px-5 md:py-4">
               <input
                 value={input}
                 onChange={(e) => setInput(e.target.value)}
@@ -154,7 +159,7 @@ export default function ChatArea() {
 
               <button
                 onClick={() => sendMessage()}
-                className="w-12 h-12 rounded-2xl bg-[#C91508] text-white text-xl shadow-lg hover:bg-[#A81207] transition"
+                className="w-10 h-10 md:w-12 md:h-12 rounded-2xl bg-[#C91508] text-white text-xl shadow-lg hover:bg-[#A81207] transition ml-2 flex items-center justify-center"
               >
                 ↑
               </button>
@@ -163,7 +168,26 @@ export default function ChatArea() {
         </div>
       </main>
 
-      <Sidebar cart={cart} context={context} />
+      <Sidebar 
+        cart={cart} 
+        context={context} 
+        deliveryDetails={deliveryDetails}
+        setDeliveryDetails={setDeliveryDetails}
+        giftMessage={giftMessage}
+        setGiftMessage={setGiftMessage}
+        onCheckout={() => setIsCheckoutOpen(true)}
+        onUpdateQuantity={updateQuantity}
+        onRemoveItem={removeFromCart}
+      />
+
+      <CheckoutModal 
+        isOpen={isCheckoutOpen}
+        onClose={() => setIsCheckoutOpen(false)}
+        cart={cart}
+        deliveryDetails={deliveryDetails}
+        context={context}
+        giftMessage={giftMessage}
+      />
     </div>
   );
 }
